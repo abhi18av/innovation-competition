@@ -1,9 +1,7 @@
-(defproject innovation-competition "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
-  :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
-            :url "https://www.eclipse.org/legal/epl-2.0/"}
-  :dependencies [[org.clojure/clojure "1.10.1"]
-                 [medley "1.2.0"]
-                 [criterium "0.4.5"]]
+(defproject innovation-competition "1.0.0"
+  :description "A project about an innovation challenge."
+  :url "https://abhi18av.com/abhi18av"
+  :license {:name "MIT"
+            :url "https://opensource.org/licenses/MIT"}
+  :dependencies [[org.clojure/clojure "1.10.1"]]
   :repl-options {:init-ns innovation-competition.core})
