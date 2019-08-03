@@ -1,6 +1,6 @@
 (ns innovation-competition.method1
   ^{:author "Abhinav Sharma",
-    :doc "Innovation Challenge"}
+    :doc "Innovation Challenge - CLJ version"}
   (:require [clojure.edn :as edn]))
 
 

@@ -1,8 +1,9 @@
 (ns innovation-competition.method1
   ^{:author "Abhinav Sharma",
-    :doc "Innovation Challenge"}
+    :doc "Innovation Challenge - CLJS version"}
   (:require [cljs.reader :as reader]
-            [lumo.io :as io]))
+            [lumo.io :as io]
+            [clojure.string :as str]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -153,6 +154,26 @@
 
 (def solution-data
   (map house-info set-of-house-names))
+
+
+
+;; NOTE: Native colored output in Lumo-cljs via NodeJS
+;; Reference: http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+
+(def ascii-colors
+  {:red "\u001b[31m"
+   :green "\u001b[32m"
+   :yellow "\u001b[33m"
+   :blue "\u001b[34m"
+   :magenta "\u001b[35m"
+   :cyan "\u001b[36m"
+   :white "\u001b[37m"
+   :reset "\u001b[0m"})
+
+(defn colorized-log [color text]
+  (str ((keyword color) ascii-colors) text (:reset ascii-colors)))
+
+(colorized-log "red" "This is colored!")
 
 
 ;; DONE
