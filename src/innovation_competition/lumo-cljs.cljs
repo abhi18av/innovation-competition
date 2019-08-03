@@ -41,13 +41,11 @@
 
 
 (def keys-in-user-data
-  "All unique keys from the `users-data`
-  "
+  "All unique keys from the `users-data`"
   (set (flatten (map keys users-data))))
 
 (def keys-in-ideas-data
-  "All unique keys from the `ideas-data`
-  "
+  "All unique keys from the `ideas-data`"
   (set (flatten (map keys ideas-data))))
 
 

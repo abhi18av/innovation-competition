@@ -2,8 +2,7 @@
   ^{:author "Abhinav Sharma",
     :doc "Innovation Challenge"}
   (:require [clojure.edn :as edn]
-            [innovation-competition.method1 :as method1]
-            [innovation-competition.method2 :as method2]))
+            [innovation-competition.lib :as lib]))
 
 
 
@@ -18,7 +17,7 @@
    (slurp "./resources/ideas.edn")))
 
 
-;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (def users-data

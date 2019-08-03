@@ -1,4 +1,4 @@
-(ns innovation-competition.method1
+(ns innovation-competition.lib
   ^{:author "Abhinav Sharma",
     :doc "Innovation Challenge - CLJ version"}
   (:require [clojure.edn :as edn]))
@@ -39,13 +39,11 @@
 
 
 (def keys-in-user-data
-  "All unique keys from the `users-data`
-  "
+  "All unique keys from the `users-data`"
   (set (flatten (map keys users-data))))
 
 (def keys-in-ideas-data
-  "All unique keys from the `ideas-data`
-  "
+  "All unique keys from the `ideas-data`"
   (set (flatten (map keys ideas-data))))
 
 
@@ -68,7 +66,6 @@
 
 (defn- find-average-score-of-idea
   "Calculates the average score, takes care of `nil` values.
-
   ```clojure
   (find-average-score-of-idea  (first ideas-data))
   ```
@@ -81,7 +78,7 @@
     (:scores  an-idea))))
 
 (def ideas-data-with-average-scores
-  "The `ideas-data` with an extra key of `:average-score` "
+  "The `ideas-data` with an extra key of `:average-score`."
   (map
    (fn [an-idea]
      (assoc an-idea :average-score (find-average-score-of-idea an-idea)))
