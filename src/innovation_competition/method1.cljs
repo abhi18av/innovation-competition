@@ -1,7 +1,8 @@
 (ns innovation-competition.method1
   ^{:author "Abhinav Sharma",
     :doc "Innovation Challenge"}
-  (:require [clojure.edn :as edn]))
+  (:require [cljs.reader :as reader]
+            [lumo.io :as io]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -11,8 +12,8 @@
 
 (def ideas-data
   "Represents the EDN data from `ideas.edn`"
-  (edn/read-string
-   (slurp "./resources/ideas.edn")))
+  (reader/read-string
+   (io/slurp "../../resources/ideas.edn")))
 
 
 ;;;;;;;;;;;;;;;;;
@@ -20,8 +21,8 @@
 
 (def users-data
   "Represents the EDN data from `users.edn`"
-  (edn/read-string
-   (slurp "./resources/users.edn")))
+  (reader/read-string
+   (io/slurp "../../resources/users.edn")))
 
 
 
@@ -126,9 +127,9 @@
 
 (defn- authored-by-house [house-name authorship-datapoint]
   (if
-   (some #{house-name} (map :house (:authorship authorship-datapoint))
-    true
-    false)))
+   (some #{house-name} (map :house (:authorship authorship-datapoint)))
+   true
+   false))
 
 (defn- ideas-by-a-house [house-name]
   (filter #(authored-by-house house-name %)
