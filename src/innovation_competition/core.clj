@@ -2,7 +2,6 @@
   ^{:author "Abhinav Sharma",
     :doc "Innovation Challenge - CLJ version"}
   (:require [clojure.edn :as edn]
-            [clojure.data.json :as json]
             [clojure.set :as st]))
 
 
@@ -285,7 +284,7 @@
   [a-user-id idea-and-author-pair]
   (if
    (= a-user-id
-      (:author-id (:idea idea-and-author-pair)))
+      (:author-id idea-and-author-pair))
     true
     false))
 
@@ -312,24 +311,23 @@
    (ideas-by-a-user "user-11-0008134")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; DONE
 (defn authored-by-house?
   "Checks whether the idea has been authored by a particular house"
   [house-name idea-and-author-pair]
   (if
-   (some #{house-name}
-         (map :house (:authorship idea-and-author-pair)))
+      (= house-name
+         (:house idea-and-author-pair))
     true
     false))
 
 (comment
   (authored-by-house? "Tully" (nth ideas-and-authorship-data 3))
-  (authored-by-house? "Stark" (nth ideas-and-authorship-data 3))
-  (authored-by-house? "Greyjoy" (nth ideas-and-authorship-data 2)))
+  (authored-by-house? "Stark" (nth ideas-and-authorship-data 3)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+;; DONE
 (defn ideas-by-a-house
   "Returns all the ideas which have been submitted by a particular house."
   [house-name]
@@ -340,10 +338,7 @@
   (nth (ideas-by-a-house "Stark") 9)
   (count (ideas-by-a-house "Lannister"))
   (count (ideas-by-a-house "Stark"))
-  (count (ideas-by-a-house "FreeFolk"))
-  ;; FIXME
-  (spit "ideas_by_house_stark.json"
-        (json/write-str (map :idea (ideas-by-a-house "Stark")))))
+  (count (ideas-by-a-house "FreeFolk")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -353,7 +348,7 @@
   (let [count-of-ideas  (count (ideas-by-a-house house-name))
         average-scores-of-all-ideas (map
                                      (fn [an-idea]
-                                       (get-in an-idea [:idea :average-score]))
+                                       (get an-idea :average-score))
                                      (ideas-by-a-house house-name))]
 
     {:house-name house-name
@@ -361,6 +356,7 @@
      :number-of-ideas count-of-ideas}))
 
 (comment
+  (house-info "Lannister")
   (house-info "Stark"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -374,7 +370,6 @@
 (comment
   (nth solution-data 5))
 
-;;(clojure.pprint/pprint ideas-with-average-scores (clojure.java.io/writer "ideas-final.edn"))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
