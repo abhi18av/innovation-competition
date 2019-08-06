@@ -19,6 +19,9 @@
   (edn/read-string
    (slurp "./resources/ideas.edn")))
 
+(comment
+  (nth ideas-data 5)
+  (count ideas-data))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -32,20 +35,31 @@
   (edn/read-string
    (slurp "./resources/users.edn")))
 
-
+(comment
+  (nth users-data 5)
+  (count users-data))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Data Exploration
+;; Exploring the structure of `ideas-data` and `users-data`
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(def keys-in-user-data
+(def keys-in-users-data
   "All unique keys from `users-data`"
   (set (flatten (map keys users-data))))
+
+(comment
+  (count keys-in-users-data))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def keys-in-ideas-data
   "All unique keys from `ideas-data`"
   (set (flatten (map keys ideas-data))))
+
+(comment
+  (count keys-in-ideas-data))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -154,12 +168,18 @@
                              (for [a-house double-houses]
                                (assoc a-user :house a-house)))))
 
+(comment
+  (split-double-houses (nth users-data-with-houses 11)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def users-final
   "Represents the `users-data` with the normalized `:house` key."
   (flatten (map split-double-houses users-data-with-houses)))
 
+(comment
+  (nth users-final 4)
+  (count users-final))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -169,6 +189,9 @@
    (map (fn [a-users-data]
           (name (:house a-users-data)))
         users-final)))
+
+(comment
+  (count set-of-house-names))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Merging the user and ideas data
@@ -187,6 +210,9 @@
      (= a-user-id (:id x)))
    users-final))
 
+(comment
+  (user-info (:id (nth users-final 5)))
+  (user-info (:id (nth users-final 12))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -201,12 +227,17 @@
     {:idea an-idea
      :authorship (user-info author-id)}))
 
+(comment
+  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def ideas-and-authorship-data
   "Represents the combination of normalized `users-data` with the `ideas-data` key."
   (map join-ideas-and-users ideas-data-with-average-scores))
+
+(comment
+  (nth ideas-and-authorship-data 5))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper functions
@@ -220,11 +251,23 @@
    true
    false))
 
+(comment
+  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (defn- ideas-by-a-house
   "Returns all the ideas which have been submitted by a particular house."
   [house-name]
   (filter #(authored-by-house? house-name %)
           ideas-and-authorship-data))
+
+(comment
+  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defn house-info
   "Returns the solution relevant information for a particular house"
@@ -239,6 +282,9 @@
      :innovation-score (/ (reduce + average-scores-of-all-ideas) count-of-ideas)
      :number-of-ideas count-of-ideas}))
 
+(comment
+  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Final solution
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -246,6 +292,11 @@
 
 (def solution-data
   (map house-info set-of-house-names))
+
+(comment
+  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; DONE
@@ -256,6 +307,12 @@
      (reverse
       (sort-by :innovation-score solution-data)))
 
+(comment
+  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 ;; DONE
 ;[ ] the innovation score of each house
 
@@ -263,10 +320,22 @@
        (select-keys some-house-info [:house-name :innovation-score]))
      solution-data)
 
+(comment
+  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
 ;; DONE
 ;[ ] the number of ideas submitted by each house
 
 (map (fn [some-house-info]
        (select-keys some-house-info [:house-name :number-of-ideas]))
      solution-data)
+
+(comment
+  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

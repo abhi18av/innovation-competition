@@ -10,3 +10,9 @@ pom.xml.asc
 /.nrepl-port
 .hgignore
 .hg/
+
+
+.cpcache/
+.idea/
+.rebel_readline_history
+innovation-competition.iml
