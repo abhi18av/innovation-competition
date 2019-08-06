@@ -1,7 +1,8 @@
 (ns innovation-competition.lib
   ^{:author "Abhinav Sharma",
     :doc "Innovation Challenge - CLJ version"}
-  (:require [clojure.edn :as edn]))
+  (:require [clojure.edn :as edn]
+            [clojure.data.json :as json]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -39,11 +40,11 @@
 
 
 (def keys-in-user-data
-  "All unique keys from the `users-data`"
+  "All unique keys from `users-data`"
   (set (flatten (map keys users-data))))
 
 (def keys-in-ideas-data
-  "All unique keys from the `ideas-data`"
+  "All unique keys from `ideas-data`"
   (set (flatten (map keys ideas-data))))
 
 
@@ -59,10 +60,25 @@
   ```
   "
   [scores]
-  (double
-   (if (empty? scores)
-     0
-     (/ (reduce + scores) (count scores)))))
+  (let [numeric-values  (filter some? scores)]
+    (if (= [nil] scores)
+        0.0
+        (double
+         (/ (reduce + numeric-values)
+            (count numeric-values))))))
+
+
+(comment
+ (average-score [nil])
+ (average-score [0])
+ (average-score [0 nil])
+ (average-score [0 1 nil])
+ (average-score [1 2 3 4]))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defn- find-average-score-of-idea
   "Calculates the average score, takes care of `nil` values.
@@ -71,18 +87,38 @@
   ```
   "
   [an-idea]
-  (average-score
-   (filter
-    (fn [x]
-      (not (nil? x)))
-    (:scores  an-idea))))
+  (average-score (:scores  an-idea)))
+
+(comment
+  (average-score (:scores (nth ideas-data 0)))
+  (average-score (:scores (nth ideas-data 8))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def ideas-data-with-average-scores
-  "The `ideas-data` with an extra key of `:average-score`."
+  "The `ideas-data` with the key `:average-score`."
   (map
    (fn [an-idea]
      (assoc an-idea :average-score (find-average-score-of-idea an-idea)))
    ideas-data))
+
+(comment
+  (nth ideas-data-with-average-scores 4)
+  (count ideas-data-with-average-scores))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def ideas-data-cleaned
+  "The ideas with non-zero `average-score` values"
+  (filter (fn [an-idea]
+            (if (not= 0.0 (:average-score an-idea))
+              an-idea))
+          ideas-data-with-average-scores))
+
+(comment
+  (nth ideas-data-cleaned 4)
+  (count ideas-data-cleaned))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -98,6 +134,13 @@
      (assoc a-user :house (:house a-user "FreeFolk")))
    users-data))
 
+(comment
+  (nth users-data-with-houses 4)
+  (count users-data-with-houses))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (defn- split-double-houses
   "Function for handling the users belonging to two distinct houses.
   ```clojure
@@ -111,9 +154,14 @@
                              (for [a-house double-houses]
                                (assoc a-user :house a-house)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (def users-final
   "Represents the `users-data` with the normalized `:house` key."
   (flatten (map split-double-houses users-data-with-houses)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def set-of-house-names
   "Represents the set of all the names of the houses in the `users-final`"
@@ -139,6 +187,9 @@
      (= a-user-id (:id x)))
    users-final))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn- join-ideas-and-users
   "Function to join the normalized `ideas` and `users` data.
   ```clojure
@@ -149,6 +200,9 @@
   (let [author-id (:author-id an-idea)]
     {:idea an-idea
      :authorship (user-info author-id)}))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def ideas-and-authorship-data
   "Represents the combination of normalized `users-data` with the `ideas-data` key."
@@ -196,6 +250,7 @@
 
 ;; DONE
 ;[ ] a list of the houses, from most innovative to least innovative
+
 
 (map :house-name
      (reverse

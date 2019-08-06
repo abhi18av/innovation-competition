@@ -222,7 +222,7 @@
 ;; Colored pretty printing for console via Lumo-cljs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; NOTE: Native colored output in Lumo-cljs via NodeJS
+;; NOTE: Native colored output in Lumo-cljs via NodeJS printer
 ;; Reference: http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
 
 (def ascii-colors
@@ -268,6 +268,6 @@
 (with-out-str
   (js/console.log "\n\n"
    (colorized-log "yellow"
-                  (map (fn [some-house-info]
-                         (select-keys some-house-info [:house-name :number-of-ideas]))
-                       solution-data))))
+     (map (fn [some-house-info]
+            (select-keys some-house-info [:house-name :number-of-ideas]))
+         solution-data))))
