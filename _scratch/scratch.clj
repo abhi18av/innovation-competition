@@ -1,4 +1,4 @@
-(ns innovation-competition.scratch
+(ns scratch
   ^{:author "Abhinav Sharma",
     :doc "Innovation Challenge - CLJ Scratch file"}
   (:require [clojure.edn :as edn]
@@ -9,6 +9,7 @@
 ;; Reading data
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 (def users-data
   "Represents the EDN data from `users.edn`
   ```clojure
@@ -16,7 +17,7 @@
   ```
   "
   (edn/read-string
-    (slurp "./resources/users.edn")))
+   (slurp "./resources/users.edn")))
 
 (comment
   (nth users-data 5)
@@ -31,7 +32,7 @@
   ```
   "
   (edn/read-string
-    (slurp "./resources/ideas.edn")))
+   (slurp "./resources/ideas.edn")))
 
 (comment
   (nth ideas-data 5)
@@ -42,6 +43,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Exploring the structure of `ideas-data` and `users-data`
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (comment
   ;;  "All unique keys from `users-data`"
@@ -65,8 +67,8 @@
     (if (= [nil] scores)
       0.0
       (double
-        (/ (reduce + numeric-values)
-           (count numeric-values))))))
+       (/ (reduce + numeric-values)
+          (count numeric-values))))))
 
 (comment
   (average-score [nil])
@@ -95,9 +97,9 @@
 (def ideas-data-with-average-scores
   "The `ideas-data` with the key `:average-score`."
   (map
-    (fn [an-idea]
-      (assoc an-idea :average-score (find-average-score-of-idea an-idea)))
-    ideas-data))
+   (fn [an-idea]
+     (assoc an-idea :average-score (find-average-score-of-idea an-idea)))
+   ideas-data))
 
 (comment
   (nth ideas-data-with-average-scores 4)
@@ -120,7 +122,7 @@
   (frequencies (map :author-id ideas-final))
   (take 5
         (frequencies
-          (group-by :author-id ideas-final)))
+         (group-by :author-id ideas-final)))
   (first ideas-final)
   (last ideas-final)
   (nth ideas-final 4)
@@ -136,17 +138,17 @@
   ```
   "
   (map
-    (fn [a-user]
-      (assoc a-user :house (:house a-user "FreeFolk")))
-    users-data))
+   (fn [a-user]
+     (assoc a-user :house (:house a-user "FreeFolk")))
+   users-data))
 
 (comment
   (count
-    (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
+   (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
   (first
-    (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
+   (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
   (last
-    (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
+   (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
   (nth users-data-with-houses 0)
   (take 10 users-data-with-houses)
   (count users-data-with-houses))
@@ -168,11 +170,11 @@
 
 (comment
   (count
-    (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
+   (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
   (first
-    (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
+   (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
   (last
-    (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
+   (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
   (split-double-houses (nth users-data-with-houses 11)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -192,7 +194,7 @@
   (take 10
         (sort-by :id users-final))
   (last
-    (sort-by :id users-final))
+   (sort-by :id users-final))
   (spit "users_final.json"
         (json/write-str (sort-by :id users-final))))
 
@@ -201,9 +203,9 @@
 (def set-of-house-names
   "Represents the set of all the names of the houses in the `users-final`"
   (set
-    (map (fn [a-users-data]
-           (name (:house a-users-data)))
-         users-final)))
+   (map (fn [a-users-data]
+          (name (:house a-users-data)))
+        users-final)))
 
 (comment
   (count set-of-house-names))
@@ -220,9 +222,9 @@
   "
   [a-user-id]
   (filter
-    (fn [x]
-      (= a-user-id (:id x)))
-    users-final))
+   (fn [x]
+     (= a-user-id (:id x)))
+   users-final))
 
 (comment
   (user-and-house-info "user-94-0002159")
@@ -254,7 +256,7 @@
 (def ideas-and-authorship-data
   "Represents the normalized combination of the initial `users-data` with the `ideas-data` key."
   (flatten
-    (map merge-idea-and-author ideas-final)))
+   (map merge-idea-and-author ideas-final)))
 
 (comment
   (count ideas-and-authorship-data)
@@ -270,8 +272,8 @@
   "Checks whether the idea has been authored by a particular house"
   [a-user-id idea-and-author-pair]
   (if
-    (= a-user-id
-       (:author-id idea-and-author-pair))
+   (= a-user-id
+      (:author-id idea-and-author-pair))
     true
     false))
 
@@ -292,10 +294,10 @@
 
 (comment
   (count
-    (ideas-by-a-user "user-55-0008466"))
+   (ideas-by-a-user "user-55-0008466"))
   (ideas-by-a-user "user-78-0008498")
   (count
-    (ideas-by-a-user "user-11-0008134")))
+   (ideas-by-a-user "user-11-0008134")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -303,8 +305,8 @@
   "Checks whether the idea has been authored by a particular house"
   [house-name idea-and-author-pair]
   (if
-    (= house-name
-       (:house idea-and-author-pair))
+   (= house-name
+      (:house idea-and-author-pair))
     true
     false))
 
@@ -333,9 +335,9 @@
   [house-name]
   (let [count-of-ideas  (count (ideas-by-a-house house-name))
         average-scores-of-all-ideas (map
-                                      (fn [an-idea]
-                                        (get an-idea :average-score))
-                                      (ideas-by-a-house house-name))]
+                                     (fn [an-idea]
+                                       (get an-idea :average-score))
+                                     (ideas-by-a-house house-name))]
 
     {:house-name house-name
      :innovation-score (/ (reduce + average-scores-of-all-ideas) count-of-ideas)
@@ -360,7 +362,7 @@
 ;;[ ] a list of the houses, from most innovative to least innovative
 (map :house-name
      (reverse
-       (sort-by :innovation-score solution-data)))
+      (sort-by :innovation-score solution-data)))
 
 (comment
   (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
