@@ -52,13 +52,15 @@ you to move to actually solving the problem.
 [ ] There's no need to write a test suite for this exercise.
 
 
-
+~~~~~~~~~~
 
 ## USAGE
+- [ ] lumo based
+- [ ] nextjournal based ( clojure  + python3)
 
+[] make videos private 
 
 ## DESIGN CONSIDERATIONS
-
 #### Clojure 
 
 #### ClojureScript
