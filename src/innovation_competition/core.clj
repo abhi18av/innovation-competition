@@ -2,7 +2,8 @@
   ^{:author "Abhinav Sharma",
     :doc "Innovation Challenge - CLJ version"}
   (:require [clojure.edn :as edn]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clojure.set :as st]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -10,6 +11,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; DONE
+
+
 (def users-data
   "Represents the EDN data from `users.edn`
   ```clojure
@@ -47,10 +50,10 @@
 
 
 (comment
-;;  "All unique keys from `users-data`"
+  ;;  "All unique keys from `users-data`"
   (set (flatten (map keys users-data)))
 
-;; "All unique keys from `ideas-data`"
+  ;; "All unique keys from `ideas-data`"
   (set (flatten (map keys ideas-data))))
 
 
@@ -60,6 +63,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; DONE
+
+
 (defn average-score
   "Util function to calculate averages.
   ```clojure
@@ -69,17 +74,17 @@
   [scores]
   (let [numeric-values  (filter some? scores)]
     (if (= [nil] scores)
-        0.0
-        (double
-         (/ (reduce + numeric-values)
-            (count numeric-values))))))
+      0.0
+      (double
+       (/ (reduce + numeric-values)
+          (count numeric-values))))))
 
 (comment
- (average-score [nil])
- (average-score [0])
- (average-score [0 nil])
- (average-score [0 1 nil])
- (average-score [1 2 3 4]))
+  (average-score [nil])
+  (average-score [0])
+  (average-score [0 nil])
+  (average-score [0 1 nil])
+  (average-score [1 2 3 4]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -100,6 +105,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 (def ideas-data-with-average-scores
   "The `ideas-data` with the key `:average-score`."
   (map
@@ -115,12 +121,20 @@
 ;; DONE
 (def ideas-final
   "The ideas with non-zero `average-score` values"
-  (filter (fn [an-idea]
-            (if (not= 0.0 (:average-score an-idea))
-              an-idea))
-          ideas-data-with-average-scores))
+  (let [valid-ideas       (filter (fn [an-idea]
+                                    (if (not= 0.0 (:average-score an-idea))
+                                      an-idea))
+                                  ideas-data-with-average-scores)]
+    (map #(st/rename-keys %1 {:id :idea-id}) valid-ideas)))
 
 (comment
+  (take 5
+        (group-by :author-id ideas-final))
+  ;; frequency of ideas submitted by a specific user
+  (frequencies (map :author-id ideas-final))
+  (take 5
+        (frequencies
+         (group-by :author-id ideas-final)))
   (first ideas-final)
   (last ideas-final)
   (nth ideas-final 4)
@@ -183,7 +197,7 @@
 
 (comment
   (take 10
-    (flatten (map split-double-houses users-data-with-houses)))
+        (flatten (map split-double-houses users-data-with-houses)))
   (nth users-final 13)
   (take 15 users-final)
   (first users-final)
@@ -192,7 +206,7 @@
   (take 10
         (sort-by :id users-final))
   (last
-        (sort-by :id users-final))
+   (sort-by :id users-final))
   (spit "users_final.json"
         (json/write-str (sort-by :id users-final))))
 
@@ -212,10 +226,10 @@
 ;; Merging the user and ideas data
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DONE
-(defn user-info
+(defn user-and-house-info
   "A function to query the `users-final` with a given `:id`
   ```clojure
-  (user-info \"user-53-0008852\"))
+  (user-and-house-info \"user-53-0008852\"))
   ```
   "
   [a-user-id]
@@ -225,47 +239,88 @@
    users-final))
 
 (comment
-  (user-info "user-94-0002159")
-  (user-info (:id (nth users-final 5)))
-  (user-info (:id (nth users-final 12))))
+  (user-and-house-info "user-94-0002159")
+  (user-and-house-info "user-32-0008735")
+  (user-and-house-info (:id (nth users-final 5)))
+  (user-and-house-info (:id (nth users-final 12))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn join-ideas-and-users
+(defn merge-idea-and-author
   "Function to join the normalized `ideas` and `users` data.
   ```clojure
-  (join-ideas-and-users (first ideas-data-with-average-scores))
+  (merge-idea-and-author (first ideas-final))
   ```
   "
   [an-idea]
-  (let [author-id (:author-id an-idea)]
-    {:idea an-idea
-     :authorship (user-info author-id)}))
+  (let [author-id (:author-id an-idea)
+        authors (user-and-house-info author-id)]
+    (map (fn [an-author]
+           (dissoc (merge an-idea an-author) :id :scores))
+         authors)))
 
 (comment
-  (join-ideas-and-users (nth ideas-data-with-average-scores 5)))
+  (merge-idea-and-author (nth ideas-final 3))
+  (merge-idea-and-author (nth ideas-final 12)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def ideas-and-authorship-data
-  "Represents the combination of normalized `users-data` with the `ideas-data` key."
-  (map join-ideas-and-users ideas-data-with-average-scores))
+  "Represents the normalized combination of the initial `users-data` with the `ideas-data` key."
+  (flatten
+   (map merge-idea-and-author ideas-final)))
 
 (comment
-  (nth ideas-and-authorship-data 5))
+  (count ideas-and-authorship-data)
+  (count (flatten ideas-and-authorship-data))
+  (nth ideas-and-authorship-data 5)
+  (take 10 ideas-and-authorship-data))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn authored-by-user?
+  "Checks whether the idea has been authored by a particular house"
+  [a-user-id idea-and-author-pair]
+  (if
+   (= a-user-id
+      (:author-id (:idea idea-and-author-pair)))
+    true
+    false))
+
+(comment
+  (authored-by-user? "user-81-0004613" (nth ideas-and-authorship-data 9))
+  (authored-by-user? "user-78-0008498" (nth ideas-and-authorship-data 3))
+  (authored-by-user? "user-11-0008134" (nth ideas-and-authorship-data 12)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; NOTE this is exactly where the mechanism between the pythonic solution an
+;; clojure solution differs
+;; Here the user-id is directly only associated with 3 ideas.
+(defn ideas-by-a-user
+  "Returns all the ideas which have been submitted by a particular house."
+  [a-user-id]
+  (filter #(authored-by-user? a-user-id %)
+          ideas-and-authorship-data))
+
+(comment
+  (count
+   (ideas-by-a-user "user-55-0008466"))
+  (ideas-by-a-user "user-78-0008498")
+  (count
+   (ideas-by-a-user "user-11-0008134")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn authored-by-house?
   "Checks whether the idea has been authored by a particular house"
-  [house-name authorship-datapoint]
+  [house-name idea-and-author-pair]
   (if
-      (some #{house-name}
-            (map :house (:authorship authorship-datapoint)))
-   true
-   false))
+   (some #{house-name}
+         (map :house (:authorship idea-and-author-pair)))
+    true
+    false))
 
 (comment
   (authored-by-house? "Tully" (nth ideas-and-authorship-data 3))
@@ -283,10 +338,12 @@
 
 (comment
   (nth (ideas-by-a-house "Stark") 9)
-  (count (ideas-by-a-house "FreeFolk")))
-;; FIXME
-(spit "ideas_by_house_lannister.json"
-      (json/write-str (map :idea (ideas-by-a-house "Lannister"))))
+  (count (ideas-by-a-house "Lannister"))
+  (count (ideas-by-a-house "Stark"))
+  (count (ideas-by-a-house "FreeFolk"))
+  ;; FIXME
+  (spit "ideas_by_house_stark.json"
+        (json/write-str (map :idea (ideas-by-a-house "Stark")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -322,7 +379,7 @@
 
 
 ;; DONE
-;[ ] a list of the houses, from most innovative to least innovative
+                                        ;[ ] a list of the houses, from most innovative to least innovative
 
 
 (map :house-name
@@ -336,7 +393,7 @@
 
 
 ;; DONE
-;[ ] the innovation score of each house
+                                        ;[ ] the innovation score of each house
 
 (map (fn [some-house-info]
        (select-keys some-house-info [:house-name :innovation-score]))
@@ -350,7 +407,8 @@
 
 
 ;; DONE
-;[ ] the number of ideas submitted by each house
+                                        ;[ ] the number of ideas submitted by each house
+
 
 (map (fn [some-house-info]
        (select-keys some-house-info [:house-name :number-of-ideas]))
