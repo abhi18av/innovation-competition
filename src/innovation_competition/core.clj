@@ -9,23 +9,7 @@
 ;; Reading data
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(def ideas-data
-  "Represents the EDN data from `ideas.edn`
-  ```clojure
-   (first ideas-data)
-  ```
-  "
-  (edn/read-string
-   (slurp "./resources/ideas.edn")))
-
-(comment
-  (nth ideas-data 5)
-  (count ideas-data))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+;; DONE
 (def users-data
   "Represents the EDN data from `users.edn`
   ```clojure
@@ -40,34 +24,43 @@
   (count users-data))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; DONE
+(def ideas-data
+  "Represents the EDN data from `ideas.edn`
+  ```clojure
+   (first ideas-data)
+  ```
+  "
+  (edn/read-string
+   (slurp "./resources/ideas.edn")))
+
+(comment
+  (nth ideas-data 5)
+  (count ideas-data))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Exploring the structure of `ideas-data` and `users-data`
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(def keys-in-users-data
-  "All unique keys from `users-data`"
-  (set (flatten (map keys users-data))))
-
 (comment
-  (count keys-in-users-data))
+;;  "All unique keys from `users-data`"
+  (set (flatten (map keys users-data)))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(def keys-in-ideas-data
-  "All unique keys from `ideas-data`"
+;; "All unique keys from `ideas-data`"
   (set (flatten (map keys ideas-data))))
 
-(comment
-  (count keys-in-ideas-data))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Data Transformation and Normalization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(defn- average-score
+;; DONE
+(defn average-score
   "Util function to calculate averages.
   ```clojure
   (average-score [1 2 3 4])
@@ -81,7 +74,6 @@
          (/ (reduce + numeric-values)
             (count numeric-values))))))
 
-
 (comment
  (average-score [nil])
  (average-score [0])
@@ -89,12 +81,10 @@
  (average-score [0 1 nil])
  (average-score [1 2 3 4]))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(defn- find-average-score-of-idea
+;; DONE
+(defn find-average-score-of-idea
   "Calculates the average score, takes care of `nil` values.
   ```clojure
   (find-average-score-of-idea  (first ideas-data))
@@ -122,8 +112,8 @@
   (count ideas-data-with-average-scores))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(def ideas-data-cleaned
+;; DONE
+(def ideas-final
   "The ideas with non-zero `average-score` values"
   (filter (fn [an-idea]
             (if (not= 0.0 (:average-score an-idea))
@@ -131,11 +121,13 @@
           ideas-data-with-average-scores))
 
 (comment
-  (nth ideas-data-cleaned 4)
-  (count ideas-data-cleaned))
+  (first ideas-final)
+  (last ideas-final)
+  (nth ideas-final 4)
+  (count ideas-final))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; DONE
 (def users-data-with-houses
   "The `users-data` normalized for `:house` being `FreeFolk` in place of `nil`.
 
@@ -149,16 +141,22 @@
    users-data))
 
 (comment
-  (nth users-data-with-houses 4)
+  (count
+   (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
+  (first
+   (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
+  (last
+   (filter (fn [a-user] (= "FreeFolk" (:house a-user))) users-data-with-houses))
+  (nth users-data-with-houses 0)
+  (take 10 users-data-with-houses)
   (count users-data-with-houses))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defn- split-double-houses
+;; DONE
+(defn split-double-houses
   "Function for handling the users belonging to two distinct houses.
   ```clojure
-     (make-unique-houses (nth users-data-with-houses 8))
+     (split-double-houses (nth users-data-with-houses 8))
   ```
   "
   [a-user]
@@ -169,20 +167,37 @@
                                (assoc a-user :house a-house)))))
 
 (comment
+  (count
+   (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
+  (first
+   (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
+  (last
+   (filter (fn [a-user] (set? (:house a-user))) users-data-with-houses))
   (split-double-houses (nth users-data-with-houses 11)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; DONE
 (def users-final
   "Represents the `users-data` with the normalized `:house` key."
   (flatten (map split-double-houses users-data-with-houses)))
 
 (comment
-  (nth users-final 4)
-  (count users-final))
+  (take 10
+    (flatten (map split-double-houses users-data-with-houses)))
+  (nth users-final 13)
+  (take 15 users-final)
+  (first users-final)
+  (last users-final)
+  (count users-final)
+  (take 10
+        (sort-by :id users-final))
+  (last
+        (sort-by :id users-final))
+  (spit "users_final.json"
+        (json/write-str (sort-by :id users-final))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; DONE
 (def set-of-house-names
   "Represents the set of all the names of the houses in the `users-final`"
   (set
@@ -196,9 +211,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Merging the user and ideas data
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defn- user-info
+;; DONE
+(defn user-info
   "A function to query the `users-final` with a given `:id`
   ```clojure
   (user-info \"user-53-0008852\"))
@@ -211,12 +225,13 @@
    users-final))
 
 (comment
+  (user-info "user-94-0002159")
   (user-info (:id (nth users-final 5)))
   (user-info (:id (nth users-final 12))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- join-ideas-and-users
+(defn join-ideas-and-users
   "Function to join the normalized `ideas` and `users` data.
   ```clojure
   (join-ideas-and-users (first ideas-data-with-average-scores))
@@ -243,7 +258,7 @@
 ;; Helper functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- authored-by-house?
+(defn authored-by-house?
   "Checks whether the idea has been authored by a particular house"
   [house-name authorship-datapoint]
   (if
@@ -260,7 +275,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(defn- ideas-by-a-house
+(defn ideas-by-a-house
   "Returns all the ideas which have been submitted by a particular house."
   [house-name]
   (filter #(authored-by-house? house-name %)
