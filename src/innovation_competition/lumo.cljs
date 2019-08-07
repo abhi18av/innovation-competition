@@ -269,8 +269,6 @@
 (colorized-output "cyan" "A list of the houses, from most innovative to least innovative")
 (js/console.log (clj->js sorted-house-scores))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DONE
 ;; [X] the innovation score of each house
@@ -302,5 +300,5 @@
 ;; Thank you ;)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(colorized-output "cyan" "Thank you for participating :) ")
+(colorized-output "cyan" "Thank you for participating ;) ")
 
