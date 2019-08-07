@@ -248,7 +248,6 @@
    :white "\u001b[37m"
    :reset "\u001b[0m"})
 
-
 (defn colorized-output [color text]
   (with-out-str
     (js/console.log "\n########################################\n"
