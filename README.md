@@ -1,5 +1,3 @@
-# innovation-competition
-
 # Nosco Hiring Challenge
 
 There is an *innovation competition* across the land, and the various
@@ -52,7 +50,7 @@ you to move to actually solving the problem.
 [ ] There's no need to write a test suite for this exercise.
 
 
-~~~~~~~~~~
+--------
 
 ## USAGE
 - [ ] lumo based
