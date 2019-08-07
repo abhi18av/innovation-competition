@@ -127,6 +127,8 @@ This was a really fun problem to work with and I explored the solution using ano
 - To avoid the multiple build tools you might need to install to evaluate various other submissions, you could ask people to use [nextjournal](https://nextjournal.com/nextjournal/clojure-environment) as it comes with an in-built `clojure` and `clojurescript` repl. Think of it as a much better version of `jupyter notebooks`.
 
 ## Things I tried
+
 - Adding [rebel-readline](https://github.com/bhauman/rebel-readline) library to the project to make the `lein repl` colorful but decided against adding another dependency.
+
 - Exploring the data via [cognitect's REBL](https://github.com/cognitect-labs/REBL-distro), couldn't make it work :( 
 
