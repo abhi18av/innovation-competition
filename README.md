@@ -58,6 +58,7 @@ you to move to actually solving the problem.
 - [ ] lumo based
 - [ ] nextjournal based ( clojure  + python3)
 
+
 [] make videos private 
 
 ## DESIGN CONSIDERATIONS
@@ -68,3 +69,4 @@ you to move to actually solving the problem.
 ## THOUGHTS
 - Depending on the team's comfort level and design choices...
 - A shared resource pool would be really helpful like the standard clojure library reference or PurelyFunctional courses. 
+- In production, I think it might be worth trying out pathom for traversing nested queries :) 
