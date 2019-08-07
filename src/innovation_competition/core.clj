@@ -8,8 +8,11 @@
 ;; General outline of the solution
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
+;; - Read in the data
+;; - Address the issue of `nil` values in `idea scores`
+;; - Address `double-houses` for users
+;; - Associate the final forms of both datasets
+;; - Print out the solution
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reading in the data
@@ -36,7 +39,7 @@
    (slurp "./resources/ideas.edn")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Data Transformation and Normalization
+;; Data Transformations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn average-score
@@ -81,14 +84,12 @@
                                     (if (not= 0.0 (:average-score an-idea))
                                       an-idea))
                                   ideas-data-with-average-scores)]
-    (map (fn [a-valid-idea]
-           (st/rename-keys a-valid-idea {:id :idea-id}) valid-ideas))))
+    (map #(st/rename-keys %1 {:id :idea-id}) valid-ideas)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def users-data-with-houses
   "The `users-data` normalized for `:house` being `FreeFolk` in place of `nil`.
-
   ```clojure
   (first users-data-with-houses)
   ```
@@ -162,7 +163,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def ideas-and-authorship-data
-  "Represents the normalized combination of the initial `users-data` with the `ideas-data` key."
+  "Represents the normalized combination of the initial `users-data` with the `ideas-data`."
   (flatten
    (map merge-idea-and-author ideas-final)))
 
@@ -174,8 +175,8 @@
   "Checks whether the idea has been authored by a particular house"
   [a-user-id idea-and-author-pair]
   (if
-   (= a-user-id
-      (:author-id idea-and-author-pair))
+      (= a-user-id
+         (:author-id idea-and-author-pair))
     true
     false))
 
@@ -193,8 +194,8 @@
   "Checks whether the idea has been authored by a particular house"
   [house-name idea-and-author-pair]
   (if
-   (= house-name
-      (:house idea-and-author-pair))
+      (= house-name
+         (:house idea-and-author-pair))
     true
     false))
 
@@ -229,24 +230,30 @@
   (map house-info set-of-house-names))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DONE
+;; [X] a list of the houses, from most innovative to least innovative
 
-;;[ ] a list of the houses, from most innovative to least innovative
-(map :house-name
-     (reverse
-      (sort-by :innovation-score solution-data)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;[ ] the innovation score of each house
-(map (fn [some-house-info]
-       (select-keys some-house-info [:house-name :innovation-score]))
-     solution-data)
+(def sorted-house-scores
+  (map :house-name
+       (reverse
+        (sort-by :innovation-score solution-data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DONE
+;; [X] the innovation score of each house
 
-;;[ ] the number of ideas submitted by each house
-(map (fn [some-house-info]
-       (select-keys some-house-info [:house-name :number-of-ideas]))
-     solution-data)
+(def innovation-score-of-each-house
+  (reverse (sort-by :innovation-score
+                  (map (fn [some-house-info]
+                         (select-keys some-house-info [:house-name :innovation-score]))
+                       solution-data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DONE
+;; [X] the number of ideas submitted by each house
+
+(def number-of-ideas-per-house
+ (reverse (sort-by :number-of-ideas
+                   (map (fn [some-house-info]
+                          (select-keys some-house-info [:house-name :number-of-ideas]))
+                        solution-data))))
