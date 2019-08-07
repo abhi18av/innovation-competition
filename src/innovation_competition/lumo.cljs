@@ -15,9 +15,9 @@
 ;; - Associate the final forms of both datasets
 ;; - Print out the solution
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reading data
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def ideas-data
   "Represents the EDN data from `ideas.edn`
@@ -28,8 +28,7 @@
   (reader/read-string
    (io/slurp "../../resources/ideas.edn")))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def users-data
   "Represents the EDN data from `users.edn`
@@ -174,7 +173,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn authored-by-user?
-  "Checks whether the idea has been authored by a particular house"
+  "Checks whether the idea has been authored by a particular user"
   [a-user-id idea-and-author-pair]
   (if
       (= a-user-id
@@ -185,7 +184,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn ideas-by-a-user
-  "Returns all the ideas which have been submitted by a particular house."
+  "Returns all the ideas which have been submitted by a particular user"
   [a-user-id]
   (filter #(authored-by-user? a-user-id %)
           ideas-and-authorship-data))
@@ -204,7 +203,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn ideas-by-a-house
-  "Returns all the ideas which have been submitted by a particular house."
+  "Returns all the ideas which have been submitted by a particular house"
   [house-name]
   (filter #(authored-by-house? house-name %)
           ideas-and-authorship-data))

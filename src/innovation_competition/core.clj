@@ -12,7 +12,7 @@
 ;; commented code snippets to help the reader understand the results of each operation
 ;; and to show how each form is supposed to be used.
 
-;; For a simpler, executable version please see the `lumo.cljs` version.
+;; For a concise, executable version please see the `lumo.cljs` version.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; General outline of the solution
@@ -272,7 +272,6 @@
   (flatten
    (map merge-idea-and-author ideas-final)))
 
-
 (comment
   (count ideas-and-authorship-data)
   (count (flatten ideas-and-authorship-data))
@@ -284,7 +283,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn authored-by-user?
-  "Checks whether the idea has been authored by a particular house"
+  "Checks whether the idea has been authored by a particular user"
   [a-user-id idea-and-author-pair]
   (if
       (= a-user-id
@@ -300,7 +299,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn ideas-by-a-user
-  "Returns all the ideas which have been submitted by a particular house."
+  "Returns all the ideas which have been submitted by a particular user"
   [a-user-id]
   (filter #(authored-by-user? a-user-id %)
           ideas-and-authorship-data))
@@ -330,7 +329,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn ideas-by-a-house
-  "Returns all the ideas which have been submitted by a particular house."
+  "Returns all the ideas which have been submitted by a particular house"
   [house-name]
   (filter #(authored-by-house? house-name %)
           ideas-and-authorship-data))
@@ -355,7 +354,6 @@
     {:house-name house-name
      :innovation-score (/ (reduce + average-scores-of-all-ideas) count-of-ideas)
      :number-of-ideas count-of-ideas}))
-
 
 (comment
   (house-info "Lannister")
